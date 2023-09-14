@@ -7,19 +7,16 @@
 #include "IndexBuffer.h"
 #include "IndexBuffer.h"
 #include "Renderer.h"
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-
+#include "Particle.h"
 // settings
 const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_HEIGHT = 800;
 
 #pragma region Shaders Variables
 const char* vertexShaderPath = "src/vertex.shader";
 const char* fragmentShaderPath = "src/fragment.shader";
 #pragma endregion
-
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 int main()
 {
     glfwInit();
@@ -50,26 +47,15 @@ int main()
     }
 
 
+    Particle p1;
+    p1.createVertices();
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-         0.5f,  0.5f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
-    };
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-    
     VertexArray va;
-    VertexBuffer vb(vertices, sizeof(vertices));
-    IndexBuffer ib(indices, 6);
+    VertexBuffer vb(p1.getVertices(), p1.getVerticesSize());
+    IndexBuffer ib(p1.getIndices(), p1.getIndicesSize());
 
     VertexBufferLayout layout;
-    layout.AddFloat(3);
+    layout.AddFloat(2);
 
     va.AddBuffer(vb, layout);
 
@@ -90,6 +76,9 @@ int main()
     }
 
 }
+void processInput(GLFWwindow* window);
+
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
