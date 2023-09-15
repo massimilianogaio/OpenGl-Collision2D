@@ -46,9 +46,12 @@ int main()
         return -1;
     }
 
+       
+    
 
     Particle p1;
-    p1.createVertices();
+    //p1.transform.setScale(vec3(1.0f));
+
 
     VertexArray va;
     VertexBuffer vb(p1.getVertices(), p1.getVerticesSize());
@@ -61,15 +64,23 @@ int main()
 
     Shader shader(vertexShaderPath, fragmentShaderPath);
     shader.use();
-    shader.SetUniform4f("u_Color", 0.0f, 0.3f, 0.8f, 1.0f);
+
 
     Renderer renderer;
+    glm::mat4 projectionMatrix = glm::ortho(-400.0f, 400.0f, -400.0f, 400.0f, -1.0f, 1.0f);
+
 
     while (!glfwWindowShouldClose(window))
     {
+        p1.rigidBody.update();
+        std::cout << "PointsGoalReached : " << p1.transform.getPosition().x << std::endl;
+
+        shader.SetMat4f("m_mvp", projectionMatrix);
+        shader.SetMat4f("m_projection", p1.transform.getTransformMatrix());
+        shader.SetUniform4f("u_Color", p1.color.x, p1.color.y, p1.color.z, p1.color.w);
+
         renderer.Clear();
         renderer.Draw(va, ib, shader);
-
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();

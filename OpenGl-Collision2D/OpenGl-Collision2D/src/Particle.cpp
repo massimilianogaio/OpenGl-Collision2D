@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <iostream>
 
+Particle::Particle()
+{
+    
+    color = vec4(0.0f, 0.3f, 0.8f, 1.0f);
+    createVertices();
+}
+
 void Particle::createVertices()
 {
 	particleVertices = new float[numVertices * 2];
@@ -35,4 +42,9 @@ unsigned int Particle::getVerticesSize()
 unsigned int Particle::getIndicesSize()
 {
     return sizeof(unsigned int) * numVertices * 3;
+}
+
+vec4 Particle::getColor()
+{
+    return color;
 }
