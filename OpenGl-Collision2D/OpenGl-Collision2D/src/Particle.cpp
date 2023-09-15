@@ -2,11 +2,12 @@
 #include <math.h>
 #include <stdio.h>
 #include <iostream>
+#include "Utils.h"
 
 Particle::Particle()
 {
-    
-    color = vec4(0.0f, 0.3f, 0.8f, 1.0f);
+    transform.setPosition(vec3(GetRandomNumber(-halfWindowsSize.x, halfWindowsSize.x), GetRandomNumber(-halfWindowsSize.y, halfWindowsSize.y), 0));
+    color = vec4(GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), 1.0f);
     createVertices();
 }
 

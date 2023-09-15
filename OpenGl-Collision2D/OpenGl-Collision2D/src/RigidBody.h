@@ -1,18 +1,19 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "Transform.h"
+using namespace glm;
 
 class RigidBody {
 public:
-    RigidBody(Transform* rbTransform, vec2 direction);
+    RigidBody(Transform* rbTransform);
 
-    void setDirection(const glm::vec2& direction);
-    glm::vec2 getDirection() const;
-    void setAcceleration(const glm::vec2& velocity);
-    glm::vec2 getAcceleration() const;
-    void update();
+    void setDirection(const vec2& direction);
+    vec2 getDirection() const;
+    void setAcceleration(const vec2& velocity);
+    vec2 getAcceleration() const;
+    void updatePhysics();
 private:
-    glm::vec2 direction;
-    glm::vec2 acceleration;
+    vec2 direction;
+    vec2 acceleration;
     Transform* rbTransform;
 };

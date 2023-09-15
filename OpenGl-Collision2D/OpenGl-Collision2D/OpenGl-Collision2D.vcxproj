@@ -147,12 +147,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\CollisionDetection.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\Render.cpp" />
     <ClCompile Include="src\RigidBody.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
@@ -162,12 +164,14 @@
     <None Include="src\vertex.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CollisionDetection.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\RigidBody.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />

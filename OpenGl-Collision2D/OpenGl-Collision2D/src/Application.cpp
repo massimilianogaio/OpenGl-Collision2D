@@ -8,6 +8,7 @@
 #include "IndexBuffer.h"
 #include "Renderer.h"
 #include "Particle.h"
+#include "CollisionDetection.h"
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
@@ -46,12 +47,11 @@ int main()
         return -1;
     }
 
-       
-    
-
-    Particle p1;
-    //p1.transform.setScale(vec3(1.0f));
-
+    Particle p1, p2;
+    std::vector<Particle*> particleVector;
+    particleVector.push_back(&p1);
+    particleVector.push_back(&p2);
+    CollisionDetection collisionDectection = CollisionDetection(vec2(400.0f), particleVector);
 
     VertexArray va;
     VertexBuffer vb(p1.getVertices(), p1.getVerticesSize());
@@ -63,7 +63,7 @@ int main()
     va.AddBuffer(vb, layout);
 
     Shader shader(vertexShaderPath, fragmentShaderPath);
-    shader.use();
+    
 
 
     Renderer renderer;
@@ -72,15 +72,25 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        p1.rigidBody.update();
-        std::cout << "PointsGoalReached : " << p1.transform.getPosition().x << std::endl;
-
-        shader.SetMat4f("m_mvp", projectionMatrix);
-        shader.SetMat4f("m_projection", p1.transform.getTransformMatrix());
-        shader.SetUniform4f("u_Color", p1.color.x, p1.color.y, p1.color.z, p1.color.w);
-
+        collisionDectection.DetectCollision();
         renderer.Clear();
-        renderer.Draw(va, ib, shader);
+        for (int i = 0; i < particleVector.size(); i++)
+        {
+            particleVector[i]->rigidBody.updatePhysics();
+            shader.use();
+            shader.SetMat4f("m_mvp", projectionMatrix);
+            shader.SetMat4f("m_projection", particleVector[i]->transform.getTransformMatrix());
+            shader.SetUniform4f("u_Color", particleVector[i]->color.x, 
+                particleVector[i]->color.y, 
+                particleVector[i]->color.z, 
+                particleVector[i]->color.w);
+
+            
+            renderer.Draw(va, ib, shader);
+
+        }
+       
+
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();

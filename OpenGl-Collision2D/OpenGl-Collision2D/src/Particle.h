@@ -1,13 +1,14 @@
 #pragma once
 #include "Transform.h"
 #include "RigidBody.h"
+
 class Particle
 {
 public:
 	Particle();
 
 	Transform transform;
-	RigidBody rigidBody = RigidBody(&transform, vec2(1.0f, 1.0f));
+	RigidBody rigidBody = RigidBody(&transform);
 
 	vec4 color;
 	float* getVertices();
