@@ -7,8 +7,12 @@
 Particle::Particle()
 {
     transform.setPosition(vec3(GetRandomNumber(-halfWindowsSize.x, halfWindowsSize.x), GetRandomNumber(-halfWindowsSize.y, halfWindowsSize.y), 0));
+
+    transform.setScale(vec3(GetRandomNumber(.3f, 2.5f)));
     color = vec4(GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), 1.0f);
     createVertices();
+
+    rigidBody = new RigidBody(&transform);
 }
 
 void Particle::createVertices()

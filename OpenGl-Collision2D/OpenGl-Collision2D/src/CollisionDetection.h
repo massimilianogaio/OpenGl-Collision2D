@@ -15,5 +15,9 @@ private:
 	vec2 halfWindowSize;
 	std::vector<Particle*>& particles;
 
-	void DectectWindowCollision(Particle* particle);
+	void DectectRigidBodyCollision();
+	bool IsColliding(Particle* p1, Particle* p2);
+	bool IsIntersectingXAxis(vec3 pivot1, vec3 pivot2, float radiousSize1, float radiousSize2);
+	bool IsIntersectingYAxis(vec3 pivot1, vec3 pivot2, float radiousSize1, float radiousSize2);
+	void DectectWindowCollision();
 };

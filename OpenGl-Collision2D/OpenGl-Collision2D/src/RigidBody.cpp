@@ -3,9 +3,11 @@
 
 #include "Utils.h"
 using namespace glm;
-RigidBody::RigidBody(Transform* rbTransform) : acceleration(vec2(.1f))  
+RigidBody::RigidBody(Transform* rbTransform)  
 {
     this->rbTransform = rbTransform;
+    this->mass = rbTransform->getScale().x / 1.0f;
+    this->acceleration = vec2(force / mass);
     this->direction = vec2(GetRandomNumber(-1.0, 1.0f), GetRandomNumber(-1.0, 1.0f));
 }
 
@@ -23,6 +25,11 @@ void RigidBody::setDirection(const vec2& direction) {
 
 vec2 RigidBody::getDirection() const {
     return direction;
+}
+
+float RigidBody::getMass() const
+{
+    return mass;
 }
 
 void RigidBody::updatePhysics() {

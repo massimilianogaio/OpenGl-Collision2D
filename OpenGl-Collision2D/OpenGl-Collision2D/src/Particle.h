@@ -8,7 +8,7 @@ public:
 	Particle();
 
 	Transform transform;
-	RigidBody rigidBody = RigidBody(&transform);
+	RigidBody* rigidBody;
 
 	vec4 color;
 	float* getVertices();

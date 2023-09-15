@@ -47,10 +47,14 @@ int main()
         return -1;
     }
 
-    Particle p1, p2;
+    Particle p1, p2, p3, p4, p5, p6;
     std::vector<Particle*> particleVector;
     particleVector.push_back(&p1);
     particleVector.push_back(&p2);
+    particleVector.push_back(&p3);
+    particleVector.push_back(&p4);
+    particleVector.push_back(&p5);
+    particleVector.push_back(&p6);
     CollisionDetection collisionDectection = CollisionDetection(vec2(400.0f), particleVector);
 
     VertexArray va;
@@ -76,7 +80,7 @@ int main()
         renderer.Clear();
         for (int i = 0; i < particleVector.size(); i++)
         {
-            particleVector[i]->rigidBody.updatePhysics();
+            particleVector[i]->rigidBody->updatePhysics();
             shader.use();
             shader.SetMat4f("m_mvp", projectionMatrix);
             shader.SetMat4f("m_projection", particleVector[i]->transform.getTransformMatrix());
