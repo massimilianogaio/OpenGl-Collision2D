@@ -25,11 +25,30 @@ void CollisionDetection::DectectRigidBodyCollision()
 			if (IsColliding(particles[i], particles[j]))
 			{
 				
-				vec2 dir1 = particles[i]->rigidBody->getDirection();
-				particles[i]->rigidBody->setDirection(vec2(dir1.x * -1, dir1.y * -1));
-				vec2 dir2 = particles[j]->rigidBody->getDirection();
-				particles[j]->rigidBody->setDirection(vec2(dir2.x * -1, dir2.y * -1));
-				//std::cout << "IsColliding" << particles[i]->rigidBody->getDirection().x << std::endl;
+				float m1 = particles[i]->rigidBody->getMass();
+				float m2 = particles[j]->rigidBody->getMass();
+				vec2 u1 = particles[i]->rigidBody->getDirection();
+				vec2 u2 = particles[j]->rigidBody->getDirection();
+
+				vec2 v1, v2;
+
+				// lost of energy
+				//vec2 v1 = (((m1 - m2)/(m1 + m2)) * u1) + (((2 * m2)/(m1 + m2)) * u2);
+				//vec2 v2 = (((2 * m2) / (m1 + m2)) * u1) + (((m2 - m1) / (m1 + m2)) * u2);
+
+
+				// not lost of energy
+				v1.x = ((u1.x * (m1 - m2) + 2.0f * m2 * u2.x) / (m1 + m2));
+				v1.y = ((u1.y * (m1 - m2) + 2.0f * m2 * u2.y) / (m1 + m2));
+
+				v2.x = ((u2.x * (m2 - m1) + 2.0f * m1 * u1.x) / (m1 + m2));
+				v2.y = ((u2.y * (m2 - m1) + 2.0f * m1 * u1.y) / (m1 + m2));
+
+				particles[i]->rigidBody->setDirection(v1);
+				particles[j]->rigidBody->setDirection(v2);
+
+
+
 			}
 		}
 	}

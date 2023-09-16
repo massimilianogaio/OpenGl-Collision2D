@@ -9,9 +9,7 @@
 #include "Renderer.h"
 #include "Particle.h"
 #include "CollisionDetection.h"
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 800;
+#include "Utils.h"
 
 #pragma region Shaders Variables
 const char* vertexShaderPath = "src/vertex.shader";
@@ -29,7 +27,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(halfWindowsSize.x * 2 , halfWindowsSize.y * 2, "Collision 2D", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -47,14 +45,17 @@ int main()
         return -1;
     }
 
-    Particle p1, p2, p3, p4, p5, p6;
+    Particle p1, p2, p3, p4, p5, p6, p7, p8, p9;
     std::vector<Particle*> particleVector;
     particleVector.push_back(&p1);
     particleVector.push_back(&p2);
-    particleVector.push_back(&p3);
-    particleVector.push_back(&p4);
-    particleVector.push_back(&p5);
-    particleVector.push_back(&p6);
+    //particleVector.push_back(&p3);
+    //particleVector.push_back(&p4);
+    //particleVector.push_back(&p5);
+    //particleVector.push_back(&p6);
+    //particleVector.push_back(&p7);
+    //particleVector.push_back(&p8);
+    //particleVector.push_back(&p9);
     CollisionDetection collisionDectection = CollisionDetection(vec2(400.0f), particleVector);
 
     VertexArray va;
