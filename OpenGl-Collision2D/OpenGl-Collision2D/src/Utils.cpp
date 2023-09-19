@@ -1,6 +1,6 @@
 #include "Utils.h"
 
-glm::vec2 halfWindowsSize = glm::vec2(400.0f, 400.0f);
+glm::vec2 halfWindowsSize = glm::vec2(750.0f, 400.0f);
 
 float GetRandomNumber(float min, float max)
 {

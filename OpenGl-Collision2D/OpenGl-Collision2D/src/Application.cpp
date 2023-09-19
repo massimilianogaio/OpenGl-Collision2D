@@ -16,6 +16,10 @@ const char* vertexShaderPath = "src/vertex.shader";
 const char* fragmentShaderPath = "src/fragment.shader";
 #pragma endregion
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
+
+std::vector<Particle*> particleVector;
+bool pressedKey = false;
 int main()
 {
     glfwInit();
@@ -46,17 +50,20 @@ int main()
     }
 
     Particle p1, p2, p3, p4, p5, p6, p7, p8, p9;
-    std::vector<Particle*> particleVector;
     particleVector.push_back(&p1);
     particleVector.push_back(&p2);
-    //particleVector.push_back(&p3);
+    particleVector.push_back(&p3);
     //particleVector.push_back(&p4);
     //particleVector.push_back(&p5);
     //particleVector.push_back(&p6);
     //particleVector.push_back(&p7);
     //particleVector.push_back(&p8);
     //particleVector.push_back(&p9);
-    CollisionDetection collisionDectection = CollisionDetection(vec2(400.0f), particleVector);
+    //p1.transform.setScale(vec3(1.0f));
+    //p2.transform.setScale(vec3(2.5f));
+    //p3.transform.setScale(vec3(2.5f));
+    //p4.transform.setScale(vec3(2.5f));
+    CollisionDetection collisionDectection = CollisionDetection(vec2(halfWindowsSize), particleVector);
 
     VertexArray va;
     VertexBuffer vb(p1.getVertices(), p1.getVerticesSize());
@@ -72,7 +79,7 @@ int main()
 
 
     Renderer renderer;
-    glm::mat4 projectionMatrix = glm::ortho(-400.0f, 400.0f, -400.0f, 400.0f, -1.0f, 1.0f);
+    glm::mat4 projectionMatrix = glm::ortho(-halfWindowsSize.x, halfWindowsSize.x, -halfWindowsSize.y, halfWindowsSize.y, -1.0f, 1.0f);
 
 
     while (!glfwWindowShouldClose(window))
@@ -95,23 +102,30 @@ int main()
 
         }
        
-
+        processInput(window);
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
 }
-void processInput(GLFWwindow* window);
 
 
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (!pressedKey && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        fprintf(stdout, "pressed\n");
+        Particle* newP = new Particle();
+        particleVector.push_back(newP);
+        pressedKey = true;
+    }
+    else if (pressedKey && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    {
+        pressedKey = false;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

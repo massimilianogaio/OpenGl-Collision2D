@@ -10,7 +10,7 @@ Particle::Particle()
 
     
     //transform.setScale(vec3(2.0f));
-    transform.setScale(vec3(GetRandomNumber(1.0f, 2.5f)));
+    transform.setScale(vec3(GetRandomNumber(1.0f, 2.0f)));
     color = vec4(GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), 1.0f);
     createVertices();
 
