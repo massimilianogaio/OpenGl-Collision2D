@@ -49,10 +49,10 @@ int main()
         return -1;
     }
 
-    Particle p1, p2, p3, p4, p5, p6, p7, p8, p9;
-    particleVector.push_back(&p1);
-    particleVector.push_back(&p2);
-    particleVector.push_back(&p3);
+    Particle p1;
+    //particleVector.push_back(&p1);
+    //particleVector.push_back(&p2);
+    //particleVector.push_back(&p3);
     //particleVector.push_back(&p4);
     //particleVector.push_back(&p5);
     //particleVector.push_back(&p6);
@@ -110,19 +110,38 @@ int main()
 
 }
 
+float scaleInNewRange(float OldMin, float OldMax, float NewMin, float NewMax, float OldValue) {
+
+    float OldRange = (OldMax - OldMin);
+    float NewRange = (NewMax - NewMin);
+    float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+    return(NewValue);
+}
 
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (!pressedKey && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (!pressedKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        fprintf(stdout, "pressed\n");
+        
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        std::cout << "pressed " << xpos << ", " << ypos << std::endl;
+       
         Particle* newP = new Particle();
+        
+
+        newP->transform.setPosition(
+            vec3(scaleInNewRange(0.0f, halfWindowsSize.x * 2.0f, -halfWindowsSize.x, halfWindowsSize.x, xpos), 
+                scaleInNewRange(0.0f, halfWindowsSize.y * 2.0f, halfWindowsSize.y, -halfWindowsSize.y, ypos),
+                0));
+
         particleVector.push_back(newP);
         pressedKey = true;
     }
-    else if (pressedKey && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    else if (pressedKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
     {
         pressedKey = false;
     }

@@ -6,7 +6,7 @@
 
 Particle::Particle()
 {
-    transform.setPosition(vec3(GetRandomNumber(-halfWindowsSize.x, halfWindowsSize.x), GetRandomNumber(-halfWindowsSize.y, halfWindowsSize.y), 0));
+    //transform.setPosition(vec3(GetRandomNumber(-halfWindowsSize.x, halfWindowsSize.x), GetRandomNumber(-halfWindowsSize.y, halfWindowsSize.y), 0));
 
     
     //transform.setScale(vec3(2.0f));
