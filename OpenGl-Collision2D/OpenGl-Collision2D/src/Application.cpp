@@ -10,6 +10,7 @@
 #include "Particle.h"
 #include "CollisionDetection.h"
 #include "Utils.h"
+#include "Square.h"
 
 #pragma region Shaders Variables
 const char* vertexShaderPath = "src/vertex.shader";
@@ -19,6 +20,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 std::vector<Particle*> particleVector;
+std::vector<Square*> squareVector;
+
 bool pressedKey = false;
 int main()
 {
@@ -50,29 +53,28 @@ int main()
     }
 
     Particle p1;
-    //particleVector.push_back(&p1);
-    //particleVector.push_back(&p2);
-    //particleVector.push_back(&p3);
-    //particleVector.push_back(&p4);
-    //particleVector.push_back(&p5);
-    //particleVector.push_back(&p6);
-    //particleVector.push_back(&p7);
-    //particleVector.push_back(&p8);
-    //particleVector.push_back(&p9);
-    //p1.transform.setScale(vec3(1.0f));
-    //p2.transform.setScale(vec3(2.5f));
-    //p3.transform.setScale(vec3(2.5f));
-    //p4.transform.setScale(vec3(2.5f));
+    Square s1;
+
     CollisionDetection collisionDectection = CollisionDetection(vec2(halfWindowsSize), particleVector);
 
-    VertexArray va;
-    VertexBuffer vb(p1.getVertices(), p1.getVerticesSize());
-    IndexBuffer ib(p1.getIndices(), p1.getIndicesSize());
+    
 
-    VertexBufferLayout layout;
-    layout.AddFloat(2);
+    VertexArray vaSquare;
+    VertexBuffer vbSquare(s1.getVertices(), s1.getVerticesSize());
+    IndexBuffer ibSquare(s1.getIndices(), s1.getIndicesSize());
 
-    va.AddBuffer(vb, layout);
+    VertexBufferLayout layoutSquare;
+    layoutSquare.AddFloat(3);
+    vaSquare.AddBuffer(vbSquare, layoutSquare);
+
+    VertexArray vaParticle;
+    VertexBuffer vbParticle(p1.getVertices(), p1.getVerticesSize());
+    IndexBuffer ibParticle(p1.getIndices(), p1.getIndicesSize());
+
+    VertexBufferLayout layoutParticle;
+    layoutParticle.AddFloat(2);
+    vaParticle.AddBuffer(vbParticle, layoutParticle);
+
 
     Shader shader(vertexShaderPath, fragmentShaderPath);
     
@@ -86,22 +88,34 @@ int main()
     {
         collisionDectection.DetectCollision();
         renderer.Clear();
+        for (int i = 0; i < squareVector.size(); i++)
+        {
+            //squareVector[i]->rigidBody->updatePhysics();
+            shader.use();
+            shader.SetMat4f("m_mvp", projectionMatrix);
+            shader.SetMat4f("m_projection", squareVector[i]->transform.getTransformMatrix());
+            shader.SetUniform4f("u_Color", squareVector[i]->color.x,
+                squareVector[i]->color.y,
+                squareVector[i]->color.z,
+                squareVector[i]->color.w);
+
+            renderer.Draw(vaSquare, ibSquare, shader);
+
+        }
         for (int i = 0; i < particleVector.size(); i++)
         {
-            particleVector[i]->rigidBody->updatePhysics();
+            //squareVector[i]->rigidBody->updatePhysics();
             shader.use();
             shader.SetMat4f("m_mvp", projectionMatrix);
             shader.SetMat4f("m_projection", particleVector[i]->transform.getTransformMatrix());
-            shader.SetUniform4f("u_Color", particleVector[i]->color.x, 
-                particleVector[i]->color.y, 
-                particleVector[i]->color.z, 
+            shader.SetUniform4f("u_Color", particleVector[i]->color.x,
+                particleVector[i]->color.y,
+                particleVector[i]->color.z,
                 particleVector[i]->color.w);
 
-            
-            renderer.Draw(va, ib, shader);
+            renderer.Draw(vaParticle, ibParticle, shader);
 
         }
-       
         processInput(window);
         // Swap buffers
         glfwSwapBuffers(window);
