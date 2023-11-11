@@ -7,10 +7,10 @@
 #include "IndexBuffer.h"
 #include "IndexBuffer.h"
 #include "Renderer.h"
+#include "Square.h"
 #include "Particle.h"
 #include "CollisionDetection.h"
 #include "Utils.h"
-#include "Square.h"
 
 #pragma region Shaders Variables
 const char* vertexShaderPath = "src/vertex.shader";
@@ -19,8 +19,7 @@ const char* fragmentShaderPath = "src/fragment.shader";
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-std::vector<Particle*> particleVector;
-std::vector<Square*> squareVector;
+std::vector<Shape*> shapeVector;
 
 bool pressedKey = false;
 int main()
@@ -34,7 +33,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(halfWindowsSize.x * 2 , halfWindowsSize.y * 2, "Collision 2D", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(halfWindowsSize.x * 2, halfWindowsSize.y * 2, "Collision 2D", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -55,9 +54,9 @@ int main()
     Particle p1;
     Square s1;
 
-    CollisionDetection collisionDectection = CollisionDetection(vec2(halfWindowsSize), particleVector);
+    CollisionDetection collisionDectection = CollisionDetection(vec2(halfWindowsSize), shapeVector);
 
-    
+
 
     VertexArray vaSquare;
     VertexBuffer vbSquare(s1.getVertices(), s1.getVerticesSize());
@@ -77,7 +76,7 @@ int main()
 
 
     Shader shader(vertexShaderPath, fragmentShaderPath);
-    
+
 
 
     Renderer renderer;
@@ -88,32 +87,27 @@ int main()
     {
         collisionDectection.DetectCollision();
         renderer.Clear();
-        for (int i = 0; i < squareVector.size(); i++)
+        for (int i = 0; i < shapeVector.size(); i++)
         {
-            //squareVector[i]->rigidBody->updatePhysics();
+
+            shapeVector[i]->rigidBody->updatePhysics();
             shader.use();
             shader.SetMat4f("m_mvp", projectionMatrix);
-            shader.SetMat4f("m_projection", squareVector[i]->transform.getTransformMatrix());
-            shader.SetUniform4f("u_Color", squareVector[i]->color.x,
-                squareVector[i]->color.y,
-                squareVector[i]->color.z,
-                squareVector[i]->color.w);
+            shader.SetMat4f("m_projection", shapeVector[i]->transform.getTransformMatrix());
+            shader.SetUniform4f("u_Color", shapeVector[i]->getColor().x,
+                shapeVector[i]->getColor().y,
+                shapeVector[i]->getColor().z,
+                shapeVector[i]->getColor().w);
 
-            renderer.Draw(vaSquare, ibSquare, shader);
+            if (shapeVector[i]->GetShapeType() == EShapeType::Quadrilateral)
+            {
+                renderer.Draw(vaSquare, ibSquare, shader);
+            }
+            else if (shapeVector[i]->GetShapeType() == EShapeType::Circle)
+            {
+                renderer.Draw(vaParticle, ibParticle, shader);
+            }
 
-        }
-        for (int i = 0; i < particleVector.size(); i++)
-        {
-            //squareVector[i]->rigidBody->updatePhysics();
-            shader.use();
-            shader.SetMat4f("m_mvp", projectionMatrix);
-            shader.SetMat4f("m_projection", particleVector[i]->transform.getTransformMatrix());
-            shader.SetUniform4f("u_Color", particleVector[i]->color.x,
-                particleVector[i]->color.y,
-                particleVector[i]->color.z,
-                particleVector[i]->color.w);
-
-            renderer.Draw(vaParticle, ibParticle, shader);
 
         }
         processInput(window);
@@ -133,26 +127,41 @@ float scaleInNewRange(float OldMin, float OldMax, float NewMin, float NewMax, fl
     return(NewValue);
 }
 
+bool isParticle = true;
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (!pressedKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        
+
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
-        std::cout << "pressed " << xpos << ", " << ypos << std::endl;
-       
-        Particle* newP = new Particle();
-        
+
+
+        Shape* newP;
+        if (isParticle)
+        {
+            std::cout << "Square generated" << xpos << ", " << ypos << std::endl;
+            newP = new Square();
+            
+        }
+        else
+        {
+            std::cout << "Particle generated" << xpos << ", " << ypos << std::endl;
+            newP = new Particle();
+
+        }
+        isParticle = !isParticle;
+
 
         newP->transform.setPosition(
-            vec3(scaleInNewRange(0.0f, halfWindowsSize.x * 2.0f, -halfWindowsSize.x, halfWindowsSize.x, xpos), 
+            vec3(scaleInNewRange(0.0f, halfWindowsSize.x * 2.0f, -halfWindowsSize.x, halfWindowsSize.x, xpos),
                 scaleInNewRange(0.0f, halfWindowsSize.y * 2.0f, halfWindowsSize.y, -halfWindowsSize.y, ypos),
                 0));
 
-        particleVector.push_back(newP);
+        shapeVector.push_back(newP);
+
         pressedKey = true;
     }
     else if (pressedKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)

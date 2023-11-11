@@ -1,23 +1,19 @@
 #pragma once
-#include "Transform.h"
-#include "RigidBody.h"
+#include "Shape.h"
 
-class Square
-{
+class Square : public Shape {
 public:
 	Square();
 
-	Transform transform;
-	RigidBody* rigidBody;
-
-	vec4 color;
-	float* getVertices();
-	unsigned int* getIndices();
-	unsigned int getVerticesSize();
-	unsigned int getIndicesSize();
-	vec4 getColor();
+	float* getVertices() override;
+	unsigned int* getIndices() override;
+	unsigned int getVerticesSize() override;
+	unsigned int getIndicesSize() override;
+	vec4 getColor() override;
+	EShapeType GetShapeType() override;
+protected:
+	void createVertices() override;
 private:
-	void createVertices();
 	const float size = 20.0f;
 
 	float* squareVertices;

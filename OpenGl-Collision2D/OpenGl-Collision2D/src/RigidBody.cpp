@@ -33,6 +33,6 @@ float RigidBody::getMass() const
 }
 
 void RigidBody::updatePhysics() {
-    vec3 translation = vec3(direction.x * acceleration.x, direction.y * acceleration.y, 0);
+    vec3 translation = vec3(this->direction.x * this->acceleration.x, this->direction.y * this->acceleration.y, 0);
     rbTransform->addTranslation(translation);
 }

@@ -1,28 +1,29 @@
 #pragma once
-#include "Transform.h"
-#include "RigidBody.h"
+#include "Shape.h";
 
-class Particle
-{
+class Particle : public Shape {
 public:
-	Particle();
+    Particle();
 
-	Transform transform;
-	RigidBody* rigidBody;
-
-	vec4 color;
-	float* getVertices();
-	unsigned int* getIndices();
-	unsigned int getVerticesSize();
-	unsigned int getIndicesSize();
-	vec4 getColor();
+    float* getVertices() override;
+    unsigned int* getIndices() override;
+    unsigned int getVerticesSize() override;
+    unsigned int getIndicesSize() override;
+    vec4 getColor() override;
+    EShapeType GetShapeType() override;
+protected:
+    void createVertices() override;
 private:
-	void createVertices();
-	const float radius = 20.0f;
-	const int numSegments = 50;
-	const int numVertices = numSegments + 1;
-	const int numIndices = numSegments * 3;
+    const float radius = 20.0f;
+    const int numSegments = 50;
+    const int numVertices = numSegments + 1;
+    const int numIndices = numSegments * 3;
 
-	float* particleVertices;
-	unsigned int* particleIndices;
+    float* particleVertices;
+    unsigned int* particleIndices;
 };
+
+
+
+
+

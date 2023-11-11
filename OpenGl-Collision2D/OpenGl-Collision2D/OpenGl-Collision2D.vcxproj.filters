@@ -94,5 +94,8 @@
     <ClInclude Include="src\Square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

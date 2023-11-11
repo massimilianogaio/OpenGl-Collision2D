@@ -50,8 +50,11 @@ unsigned int Particle::getIndicesSize()
 {
     return sizeof(unsigned int) * numVertices * 3;
 }
-
 vec4 Particle::getColor()
 {
     return color;
+}
+EShapeType Particle::GetShapeType()
+{
+    return EShapeType::Circle;
 }

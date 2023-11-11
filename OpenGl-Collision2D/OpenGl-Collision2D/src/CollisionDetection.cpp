@@ -1,11 +1,11 @@
 #include "CollisionDetection.h"
 #include <iostream>
 
-CollisionDetection::CollisionDetection(vec2 windowSize, std::vector<Particle*>& particles)
+CollisionDetection::CollisionDetection(vec2 windowSize, std::vector<Shape*>& particles)
 	: halfWindowSize(windowSize), particles(particles)
 {
 	this->halfWindowSize = halfWindowSize;
-	this->particles = std::vector<Particle*>(particles);
+	this->particles = std::vector<Shape*>(particles);
 }
 
 void CollisionDetection::DetectCollision()
@@ -53,7 +53,7 @@ void CollisionDetection::DectectRigidBodyCollision()
 		}
 	}
 }
-bool CollisionDetection::IsColliding(Particle* p1, Particle* p2)
+bool CollisionDetection::IsColliding(Shape* p1, Shape* p2)
 {
 	vec3 pivot1 = p1->transform.getPosition();
 	vec3 pivot2 = p2->transform.getPosition();
@@ -109,7 +109,7 @@ void CollisionDetection::DectectWindowCollision()
 {
 	for (int i = 0; i < particles.size(); i++)
 	{
-		Particle* particle = particles[i];
+		Shape* particle = particles[i];
 		vec3 pos = particle->transform.getPosition();
 		vec2 dir = particle->rigidBody->getDirection();
 		if (pos.x >= halfWindowSize.x || pos.x <= -halfWindowSize.x)

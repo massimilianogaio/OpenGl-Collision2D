@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Utils.h"
 
+
 Square::Square()
 {
     transform.setScale(vec3(GetRandomNumber(1.0f, 2.0f)));
@@ -56,4 +57,8 @@ unsigned int Square::getIndicesSize()
 vec4 Square::getColor()
 {
     return color;
+}
+EShapeType Square::GetShapeType()
+{
+    return EShapeType::Quadrilateral;
 }
