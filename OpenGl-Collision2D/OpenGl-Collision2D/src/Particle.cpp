@@ -6,10 +6,6 @@
 
 Particle::Particle()
 {
-    //transform.setPosition(vec3(GetRandomNumber(-halfWindowsSize.x, halfWindowsSize.x), GetRandomNumber(-halfWindowsSize.y, halfWindowsSize.y), 0));
-
-    
-    //transform.setScale(vec3(2.0f));
     transform.setScale(vec3(GetRandomNumber(1.0f, 2.0f)));
     color = vec4(GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), GetRandomNumber(0.0f, 1.0f), 1.0f);
     createVertices();
@@ -57,4 +53,13 @@ vec4 Particle::getColor()
 EShapeType Particle::GetShapeType()
 {
     return EShapeType::Circle;
+}
+float Particle::getScaledSize()
+{
+    return radius * transform.getScale().x;
+}
+bool Particle::IsPositionInsideShape(vec3 pos)
+{
+    float distance = glm::distance(pos, transform.getPosition());
+    return distance < getScaledSize();
 }

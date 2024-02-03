@@ -62,3 +62,18 @@ EShapeType Square::GetShapeType()
 {
     return EShapeType::Quadrilateral;
 }
+float Square::getScaledSize()
+{
+    return size * transform.getScale().x;
+}
+bool Square::IsPositionInsideShape(vec3 pos)
+{
+    glm::vec3 scaledSize = glm::vec3(getScaledSize());
+
+    glm::vec3 minBound = transform.getPosition() - scaledSize;
+
+    glm::vec3 maxBound = transform.getPosition() + scaledSize;
+
+    return (pos.x >= minBound.x && pos.x <= maxBound.x &&
+        pos.y >= minBound.y && pos.y <= maxBound.y);
+}

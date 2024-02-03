@@ -20,7 +20,8 @@ public:
     virtual unsigned int getIndicesSize() = 0;
     virtual vec4 getColor() = 0;
     virtual EShapeType GetShapeType() = 0;
-
+    virtual bool IsPositionInsideShape(vec3 pos) = 0;
+    virtual float getScaledSize() = 0;
 protected:
     vec4 color;
 

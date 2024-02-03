@@ -127,7 +127,7 @@ float scaleInNewRange(float OldMin, float OldMax, float NewMin, float NewMax, fl
     return(NewValue);
 }
 
-bool isParticle = true;
+bool isToSpawnSquare = false;
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -138,30 +138,49 @@ void processInput(GLFWwindow* window)
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
+        float xMousePosScreenSpace = scaleInNewRange(0.0f, halfWindowsSize.x * 2.0f, -halfWindowsSize.x, halfWindowsSize.x, xpos);
+        float yMousePosScreenSpace = scaleInNewRange(0.0f, halfWindowsSize.y * 2.0f, halfWindowsSize.y, -halfWindowsSize.y, ypos);
+        float zMousePosScreenSpace = 0;
 
-        Shape* newP;
-        if (isParticle)
+        vec3 mousePosScreenSpace = vec3(xMousePosScreenSpace, yMousePosScreenSpace, zMousePosScreenSpace);
+
+        bool isMouseOverShape = false;
+        for (int i = 0; i < shapeVector.size(); i++)
         {
-            std::cout << "Square generated" << xpos << ", " << ypos << std::endl;
-            newP = new Square();
-            
+            if (isMouseOverShape) break;
+            isMouseOverShape = shapeVector[i]->IsPositionInsideShape(mousePosScreenSpace);
+            if (isMouseOverShape)
+            {
+                auto it = shapeVector.begin() + i;
+                shapeVector.erase(it);
+            }
+        }
+
+        if (isMouseOverShape)
+        {
+            std::cout << "MouseOverShape" << xpos << ", " << ypos << std::endl;
         }
         else
         {
-            std::cout << "Particle generated" << xpos << ", " << ypos << std::endl;
-            newP = new Particle();
+            Shape* newP;
+            if (isToSpawnSquare)
+            {
+                std::cout << "Square generated" << xpos << ", " << ypos << std::endl;
+                newP = new Square();
 
+            }
+            else
+            {
+                std::cout << "Particle generated" << xpos << ", " << ypos << std::endl;
+                newP = new Particle();
+
+            }
+            isToSpawnSquare = !isToSpawnSquare;
+
+            newP->transform.setPosition(mousePosScreenSpace);
+
+            shapeVector.push_back(newP);
         }
-        isParticle = !isParticle;
-
-
-        newP->transform.setPosition(
-            vec3(scaleInNewRange(0.0f, halfWindowsSize.x * 2.0f, -halfWindowsSize.x, halfWindowsSize.x, xpos),
-                scaleInNewRange(0.0f, halfWindowsSize.y * 2.0f, halfWindowsSize.y, -halfWindowsSize.y, ypos),
-                0));
-
-        shapeVector.push_back(newP);
-
         pressedKey = true;
     }
     else if (pressedKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)

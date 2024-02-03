@@ -11,6 +11,8 @@ public:
 	unsigned int getIndicesSize() override;
 	vec4 getColor() override;
 	EShapeType GetShapeType() override;
+	bool IsPositionInsideShape(vec3 pos) override;
+	float getScaledSize() override;
 protected:
 	void createVertices() override;
 private:

@@ -6,7 +6,7 @@ using namespace glm;
 RigidBody::RigidBody(Transform* rbTransform)  
 {
     this->rbTransform = rbTransform;
-    this->mass = rbTransform->getScale().x / 1.0f;
+    this->mass = rbTransform->getScale().x / 1.5f;
     this->acceleration = vec2(force / mass);
     this->direction = vec2(GetRandomNumber(-1.0, 1.0f), GetRandomNumber(-1.0, 1.0f));
 }
