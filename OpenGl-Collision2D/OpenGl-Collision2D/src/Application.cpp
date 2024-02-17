@@ -22,6 +22,9 @@ void processInput(GLFWwindow* window);
 std::vector<Shape*> shapeVector;
 
 bool pressedKey = false;
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
 int main()
 {
     glfwInit();
@@ -85,12 +88,16 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         collisionDectection.DetectCollision();
         renderer.Clear();
         for (int i = 0; i < shapeVector.size(); i++)
         {
 
-            shapeVector[i]->rigidBody->updatePhysics();
+            shapeVector[i]->rigidBody->updatePhysics(deltaTime);
             shader.use();
             shader.SetMat4f("m_mvp", projectionMatrix);
             shader.SetMat4f("m_projection", shapeVector[i]->transform.getTransformMatrix());

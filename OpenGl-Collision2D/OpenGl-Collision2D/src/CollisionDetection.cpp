@@ -1,5 +1,8 @@
 #include "CollisionDetection.h"
 #include <iostream>
+#include <unordered_set>
+
+std::unordered_set<int> CollidingObjects;
 
 CollisionDetection::CollisionDetection(vec2 windowSize, std::vector<Shape*>& particles)
 	: halfWindowSize(windowSize), shapes(particles)
@@ -10,45 +13,48 @@ CollisionDetection::CollisionDetection(vec2 windowSize, std::vector<Shape*>& par
 
 void CollisionDetection::DetectCollision()
 {
-
 	DectectWindowCollision();
 	DectectRigidBodyCollision();
-
 }
+glm::vec2 ComputeVelocity(glm::vec2 v1, glm::vec2 v2, float m1, float m2, glm::vec2 x1, glm::vec2 x2) {
+	glm::vec2 relativeVelocity = v1 - v2;
+	glm::vec2 relativePosition = x1 - x2;
+	float distanceSquared = glm::dot(relativePosition, relativePosition);
+	float dotProduct = glm::dot(relativeVelocity, relativePosition);
+
+	return v1 - ((2.0f * m2) / (m1 + m2)) * (dotProduct / distanceSquared) * relativePosition;
+}
+
 void CollisionDetection::DectectRigidBodyCollision()
 {
 	for (int i = 0; i < shapes.size(); i++)
 	{
 		for (int j = i + 1; j < shapes.size(); j++)
 		{
-			
-			if (IsColliding(shapes[i], shapes[j]))
+			int hash = (int)(shapes[i])+(int)(shapes[j]);
+			bool alreadyColliding = CollidingObjects.find(hash) != CollidingObjects.end();
+			bool isColliding = IsColliding(shapes[i], shapes[j]);
+			if (!alreadyColliding && isColliding)
 			{
+				CollidingObjects.insert(hash);
 
 				float m1 = shapes[i]->rigidBody->getMass();
 				float m2 = shapes[j]->rigidBody->getMass();
-				vec2 u1 = shapes[i]->rigidBody->getDirection();
-				vec2 u2 = shapes[j]->rigidBody->getDirection();
+				vec2 v1 = shapes[i]->rigidBody->getDirection() * shapes[i]->rigidBody->getAcceleration();
+				vec2 v2 = shapes[j]->rigidBody->getDirection() * shapes[j]->rigidBody->getAcceleration();
 
-				vec2 v1, v2;
+				vec3 x1 = shapes[i]->transform.getPosition();
+				vec3 x2 = shapes[j]->transform.getPosition();
 
-				// lost of energy
-				//vec2 v1 = (((m1 - m2)/(m1 + m2)) * u1) + (((2 * m2)/(m1 + m2)) * u2);
-				//vec2 v2 = (((2 * m2) / (m1 + m2)) * u1) + (((m2 - m1) / (m1 + m2)) * u2);
+				vec2 dir1 = ComputeVelocity(v1, v2, m1, m2, x1, x2) / shapes[i]->rigidBody->getAcceleration();
+				vec2 dir2 = ComputeVelocity(v2, v1, m2, m1, x2, x1) / shapes[j]->rigidBody->getAcceleration();
 
-
-				// not lost of energy
-				v1.x = ((u1.x * (m1 - m2) + 2.0f * m2 * u2.x) / (m1 + m2));
-				v1.y = ((u1.y * (m1 - m2) + 2.0f * m2 * u2.y) / (m1 + m2));
-
-				v2.x = ((u2.x * (m2 - m1) + 2.0f * m1 * u1.x) / (m1 + m2));
-				v2.y = ((u2.y * (m2 - m1) + 2.0f * m1 * u1.y) / (m1 + m2));
-
-				shapes[i]->rigidBody->setDirection(v1);
-				shapes[j]->rigidBody->setDirection(v2);
-
-
-
+				shapes[i]->rigidBody->setDirection(dir1);
+				shapes[j]->rigidBody->setDirection(dir2);
+			}
+			else if(alreadyColliding && !isColliding)
+			{
+				CollidingObjects.erase(hash);
 			}
 		}
 	}

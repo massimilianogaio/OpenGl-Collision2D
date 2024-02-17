@@ -12,7 +12,7 @@ public:
     float getMass() const;
     void setAcceleration(const vec2& velocity);
     vec2 getAcceleration() const;
-    void updatePhysics();
+    void updatePhysics(float deltaTime);
 private:
     float force = .3f;
     float mass;
