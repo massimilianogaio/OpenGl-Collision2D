@@ -24,6 +24,7 @@ std::vector<Shape*> shapeVector;
 bool pressedKey = false;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+int shapesSpawnedCount = 0;
 
 int main()
 {
@@ -134,7 +135,7 @@ float scaleInNewRange(float OldMin, float OldMax, float NewMin, float NewMax, fl
     return(NewValue);
 }
 
-bool isToSpawnSquare = false;
+
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -160,6 +161,7 @@ void processInput(GLFWwindow* window)
             {
                 auto it = shapeVector.begin() + i;
                 shapeVector.erase(it);
+                shapesSpawnedCount--;
             }
         }
 
@@ -170,7 +172,7 @@ void processInput(GLFWwindow* window)
         else
         {
             Shape* newP;
-            if (isToSpawnSquare)
+            if (shapesSpawnedCount % 3 == 0 && shapesSpawnedCount > 0)
             {
                 std::cout << "Square generated" << xpos << ", " << ypos << std::endl;
                 newP = new Square();
@@ -182,7 +184,7 @@ void processInput(GLFWwindow* window)
                 newP = new Particle();
 
             }
-            isToSpawnSquare = !isToSpawnSquare;
+            shapesSpawnedCount++;
 
             newP->transform.setPosition(mousePosScreenSpace);
 
